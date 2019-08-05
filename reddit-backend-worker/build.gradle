@@ -1,0 +1,48 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.6.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+jar{
+     enabled = true
+     baseName = 'reddit-backend-worker'
+} 
+
+springBoot {
+    mainClassName = 'com.stone.backend.RedditWorkerApplication'
+}
+
+dependencies {
+	implementation project(':reddit-backend-commons')
+	
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-booimplementation r-validation'
+	implementation 'org.hibernate:hibernate-validator:5.4.2.Final'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.9.6'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.6'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
+	
+	testImplementation 'junit:junit'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mockito:mockito-core:2.28.2'	
+}

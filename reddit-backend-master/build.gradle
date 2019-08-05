@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+ 
+repositories {
+    mavenCentral()
+}
+ 
+dependencies {   
+	testCompile("junit:junit")
+}
+
+jar{
+     enabled = false
+} 
+ 
+dependencies {
+	implementation project(':reddit-backend-commons')
+    implementation project(':reddit-backend-accounts')
+	implementation project(':reddit-backend-post')
+    implementation project(':reddit-backend-worker')   
+}
