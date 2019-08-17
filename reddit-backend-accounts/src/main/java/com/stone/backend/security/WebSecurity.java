@@ -24,13 +24,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	private Environment enviroment;
 	private UserService userService;
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private JwtTokenFactory jwtTokenFactory; 
 
 	@Autowired
-	public WebSecurity(Environment enviroment, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public WebSecurity(Environment enviroment, UserService userService
+			, BCryptPasswordEncoder bCryptPasswordEncoder, JwtTokenFactory jwtTokenFactory) {
 		super();
 		this.enviroment = enviroment;
 		this.userService = userService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		this.jwtTokenFactory = jwtTokenFactory;
 	}
 
 	@Override
@@ -38,9 +41,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("/**")
-			.permitAll()
+		http.authorizeRequests()
+			.antMatchers("/**").permitAll()
 			//.hasIpAddress(enviroment.getProperty("gateway.ip"))
+			.antMatchers(enviroment.getProperty("refreshToken.url.path")).permitAll() // Token refresh end-point
 			.and()
 				.addFilter(getAuthenticationFilter());
 		
@@ -55,12 +59,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
 	private AuthenticationFilter getAuthenticationFilter() throws Exception {
-		AuthenticationFilter authenticationFilter = new AuthenticationFilter(enviroment, authenticationManager());
+		AuthenticationFilter authenticationFilter = new AuthenticationFilter(jwtTokenFactory, authenticationManager());
 		authenticationFilter.setFilterProcessesUrl(enviroment.getProperty("login.url.path"));
 		return authenticationFilter;
 
 	}
-
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);

@@ -3,12 +3,14 @@ package com.stone.backend.security;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,18 +21,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stone.backend.dto.LoginRequestDto;
-import com.stone.backend.service.UserService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-	private Environment environment;
+	private JwtTokenFactory jwtTokenFactory;
 
-	public AuthenticationFilter(Environment environment, AuthenticationManager authenticationManager) {
+	public AuthenticationFilter(JwtTokenFactory jwtTokenFactory, AuthenticationManager authenticationManager) {
 		super();
-		this.environment = environment;
+		this.jwtTokenFactory = jwtTokenFactory;
 		this.setAuthenticationManager(authenticationManager);
 	}
 
@@ -55,14 +56,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 			Authentication auth) throws IOException, ServletException {
 		String userName = ((User) auth.getPrincipal()).getUsername();
 
-		String token = Jwts.builder()
-				.setSubject(userName)
-				.setExpiration(new Date(System.currentTimeMillis()+Long.parseLong(environment.getProperty("token.expiration_time"))))
-				.signWith(SignatureAlgorithm.HS512, environment.getProperty("token.secret"))
-				.compact();
+		Date issureDate = new Date();
+		
+		String token = jwtTokenFactory.generateAccessToken(userName, issureDate);
+		String refreshToken = jwtTokenFactory.generateRefreshToken(userName, issureDate);
 		
 		res.addHeader("token", token);
+		res.addHeader("refresh-token", refreshToken);
 		res.addHeader("userName", userName);
-	}
+	}	
 
 }

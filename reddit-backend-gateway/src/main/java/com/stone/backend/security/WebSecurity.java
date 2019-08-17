@@ -33,6 +33,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 			.antMatchers(HttpMethod.POST, environment.getProperty("api.registration.url.path")).permitAll()
 			.antMatchers(HttpMethod.POST, environment.getProperty("api.login.url.path")).permitAll()
+			.antMatchers(HttpMethod.POST, environment.getProperty("api.refreshToken.url.path")).permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.addFilter(new AuthorizationFilter(authenticationManager(), environment));
@@ -49,7 +50,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         config.addAllowedOrigin("http://localhost:3000");	//"http://127.0.0.1:3000"
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
-	    config.addExposedHeader("token");	// allow token be exposed in response headers
+	    config.addExposedHeader("token");	// allow 'token' exposed in response headers
+	    config.addExposedHeader("refresh-token");	// allow 'refreshToken' exposed in response headers
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**",config);
         return new CorsFilter(corsConfigurationSource);

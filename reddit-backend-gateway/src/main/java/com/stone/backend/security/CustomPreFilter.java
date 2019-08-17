@@ -28,7 +28,7 @@ public class CustomPreFilter extends ZuulFilter {
 	
 	@Override
 	public boolean shouldFilter() {
-		RequestContext ctx = RequestContext.getCurrentContext();	
+		RequestContext ctx = RequestContext.getCurrentContext();
 		return ctx.getRequest().getHeader("Authorization") != null;
 	}
 
