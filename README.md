@@ -4,6 +4,8 @@ This project is created to get experience in microservice architecture with Spri
 
 Regarding authentication security, I leverage JWT(Json Web Token) between front-end and back-end as well as implement automatic refresh token mechanism by two type tokens (access token and refresh token).
 
+<img src="./document/microservice.png" width="700px">
+
 <b>Structrue</b> : <br>
 <b>reddit-frontend</b> represents UI presentation layer.<br>
 <b>reddit-backend-master</b> is a gradle root project.<br>
