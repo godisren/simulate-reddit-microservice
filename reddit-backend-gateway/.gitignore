@@ -3,3 +3,6 @@
 /.gradle
 /.settings
 /bin
+/build
+/gradle
+/.gradle
