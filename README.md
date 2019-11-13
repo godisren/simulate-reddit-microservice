@@ -59,7 +59,7 @@ note : We can lauch many reddit-backend-post and reddit-backend-worker services 
 To start Front-End
 ``` bash
 cd reddit-frontend
-npm init
+npm install
 npm start
 ```
 note : only execute <b>npm init</b> for the first time. 
